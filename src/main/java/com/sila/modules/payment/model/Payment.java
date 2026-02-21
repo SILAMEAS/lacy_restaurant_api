@@ -1,14 +1,10 @@
 package com.sila.modules.payment.model;
 
 
+import com.sila.modules.order.model.Order;
 import com.sila.modules.payment.PAYMENT_METHOD;
 import com.sila.modules.payment.PAYMENT_STATUS;
-import com.sila.modules.order.model.Order;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;

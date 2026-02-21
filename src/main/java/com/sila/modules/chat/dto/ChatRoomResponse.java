@@ -2,11 +2,7 @@ package com.sila.modules.chat.dto;
 
 import com.sila.modules.chat.model.ChatRoom;
 import com.sila.modules.profile.dto.res.UserResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,11 +22,11 @@ public class ChatRoomResponse {
 
     private Set<UserResponse.UserResponseCustom> members;
 
-    public static ChatRoomResponse toResponse(ChatRoom chatRoom){
+    public static ChatRoomResponse toResponse(ChatRoom chatRoom) {
         return ChatRoomResponse.builder()
                 .id(chatRoom.getId())
                 .isGroup(chatRoom.getIsGroup())
-                .name(chatRoom.getGroupName()!=null?chatRoom.getGroupName():"Chat"+chatRoom.getId())
+                .name(chatRoom.getGroupName() != null ? chatRoom.getGroupName() : "Chat" + chatRoom.getId())
                 .roomId(chatRoom.getRoomId())
                 .members(chatRoom.getMembers().stream().map(UserResponse::toUserResponseCustom).collect(Collectors.toSet()))
                 .build();

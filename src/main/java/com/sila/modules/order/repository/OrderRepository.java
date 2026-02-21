@@ -1,8 +1,8 @@
 package com.sila.modules.order.repository;
 
 import com.sila.modules.order.model.Order;
-import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.profile.model.User;
+import com.sila.modules.resturant.model.Restaurant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +21,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findAllByRestaurant(Restaurant restaurant);
 
-    Page<Order> findAllByRestaurant(Restaurant restaurant,Pageable pageable);
+    Page<Order> findAllByRestaurant(Restaurant restaurant, Pageable pageable);
 }

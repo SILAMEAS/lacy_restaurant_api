@@ -2,11 +2,7 @@ package com.sila.modules.resturant.dto;
 
 import com.sila.modules.address.dto.AddressResponse;
 import com.sila.share.dto.res.ImageDetailsResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RestaurantResponse{
+public class RestaurantResponse {
     private Long id;
     private String name;
     private String description;

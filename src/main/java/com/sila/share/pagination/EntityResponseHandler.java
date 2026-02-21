@@ -1,11 +1,6 @@
 package com.sila.share.pagination;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;

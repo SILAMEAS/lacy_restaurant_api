@@ -1,20 +1,20 @@
 package com.sila.modules.food.controller;
 
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.share.method.OnCreate;
-import com.sila.share.method.OnUpdate;
-import com.sila.modules.food.dto.FoodRequest;
-import com.sila.share.dto.req.PaginationRequest;
-import com.sila.modules.food.dto.FoodResponse;
-import com.sila.modules.chat.dto.MessageResponse;
 import com.sila.modules.category.model.Category;
-import com.sila.modules.food.model.Food;
-import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.category.services.CategoryService;
+import com.sila.modules.chat.dto.MessageResponse;
+import com.sila.modules.food.dto.FoodRequest;
+import com.sila.modules.food.dto.FoodResponse;
+import com.sila.modules.food.model.Food;
 import com.sila.modules.food.services.FoodService;
+import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.resturant.services.RestaurantService;
 import com.sila.share.annotation.PreAuthorization;
+import com.sila.share.dto.req.PaginationRequest;
 import com.sila.share.enums.ROLE;
+import com.sila.share.method.OnCreate;
+import com.sila.share.method.OnUpdate;
+import com.sila.share.pagination.EntityResponseHandler;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -64,6 +56,7 @@ public class FoodController {
 
         return new ResponseEntity<>(MessageResponse.builder().message("food create").status(201).build(), HttpStatus.CREATED);
     }
+
     @PreAuthorization({ROLE.OWNER})
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteFood(
@@ -80,21 +73,22 @@ public class FoodController {
         var foodResEntityResponseHandler = foodService.getsByResId(restaurantId, request);
         return new ResponseEntity<>(foodResEntityResponseHandler, HttpStatus.OK);
     }
-    @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})
+
+    @PreAuthorization({ROLE.OWNER, ROLE.ADMIN})
     @PutMapping("/{foodId}")
     public ResponseEntity<FoodResponse> updateFood(
             @PathVariable Long foodId,
-            @Validated(OnUpdate.class) @ModelAttribute FoodRequest foodRequest)  {
+            @Validated(OnUpdate.class) @ModelAttribute FoodRequest foodRequest) {
 
         Food updatedFood = foodService.update(foodRequest, foodId);
 
         return new ResponseEntity<>(modelMapper.map(updatedFood, FoodResponse.class), HttpStatus.OK);
     }
 
-    @PreAuthorization({ROLE.ADMIN,ROLE.OWNER})
+    @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
     @PutMapping("/{id}/availability-status")
     public ResponseEntity<Food> updateAvailabilityStatus(
-            @PathVariable Long id)  {
+            @PathVariable Long id) {
         Food updatedFood = foodService.updateStatus(id);
 
         return new ResponseEntity<>(updatedFood, HttpStatus.OK);

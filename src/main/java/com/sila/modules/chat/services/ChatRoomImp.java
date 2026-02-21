@@ -1,16 +1,16 @@
 package com.sila.modules.chat.services;
 
 import com.sila.config.context.UserContext;
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.share.dto.req.PaginationRequest;
-import com.sila.modules.chat.dto.ChatRoomResponse;
 import com.sila.config.exception.NotFoundException;
+import com.sila.modules.chat.dto.ChatRoomResponse;
 import com.sila.modules.chat.model.ChatRoom;
-import com.sila.modules.profile.model.User;
 import com.sila.modules.chat.repository.ChatMessageRepository;
 import com.sila.modules.chat.repository.ChatRoomRepository;
+import com.sila.modules.profile.model.User;
 import com.sila.modules.profile.repository.UserRepository;
 import com.sila.modules.profile.services.UserService;
+import com.sila.share.dto.req.PaginationRequest;
+import com.sila.share.pagination.EntityResponseHandler;
 import com.sila.share.pagination.PageableUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,13 +28,13 @@ public class ChatRoomImp implements ChatRoomService {
 
     @Override
     public ChatRoom findById(Long chatRoomId) {
-        return chatRoomRepository.findById(chatRoomId).orElseThrow(()->new NotFoundException("not found room with this id"));
+        return chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new NotFoundException("not found room with this id"));
     }
 
 
     @Override
     public Optional<ChatRoom> findByRoomId(String roomId) {
-        return  chatRoomRepository.findByRoomId(roomId);
+        return chatRoomRepository.findByRoomId(roomId);
     }
 
     @Override
@@ -74,13 +74,13 @@ public class ChatRoomImp implements ChatRoomService {
     @Override
     public EntityResponseHandler<ChatRoomResponse> findAllByMember(PaginationRequest request) {
         var user = UserContext.getUser();
-        var chatRooms = chatRoomRepository.findAllByMembers(PageableUtil.fromRequest(request),Set.of(user));
+        var chatRooms = chatRoomRepository.findAllByMembers(PageableUtil.fromRequest(request), Set.of(user));
         return new EntityResponseHandler<>(chatRooms.map(ChatRoomResponse::toResponse));
     }
 
     @Override
-    public ChatRoomResponse createOrGet(Long senderId,Long receiverId) {
-        String roomId = ChatRoomService.generateRoom(senderId+"_"+receiverId);
+    public ChatRoomResponse createOrGet(Long senderId, Long receiverId) {
+        String roomId = ChatRoomService.generateRoom(senderId + "_" + receiverId);
 
         Optional<ChatRoom> existingRoom = findByRoomId(roomId);
         if (existingRoom.isPresent()) {

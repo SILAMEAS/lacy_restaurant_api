@@ -1,8 +1,8 @@
 package com.sila.config;
 
 import com.sila.config.context.UserContextFilter;
-import com.sila.config.properties.CorsProperties;
 import com.sila.config.jwt.JwtTokenValidator;
+import com.sila.config.properties.CorsProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppConfig {
     private final CorsProperties corsProperties;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -36,10 +37,10 @@ public class AppConfig {
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/api/auth/**",
+                                "/v3/api-docs/**", // Allow Swagger Document endpoint
+                                "/swagger-ui/**", // Allow Swagger endpoint
+                                "/swagger-ui.html", // Allow Swagger UI endpoint
+                                "/api/auth/**",  // Allow /api/auth  endpoint for login and sign up
                                 "/ws-chat/**",  // Allow WebSocket endpoint
                                 "/topic/**"     // Allow STOMP destinations
                         ).permitAll()
@@ -62,6 +63,7 @@ public class AppConfig {
         registrationBean.setOrder(1); // early in the chain
         return registrationBean;
     }
+
     private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();

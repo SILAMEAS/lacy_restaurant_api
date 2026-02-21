@@ -2,12 +2,12 @@ package com.sila.modules.profile.services;
 
 import com.sila.config.custom.CustomUserDetails;
 import com.sila.config.custom.CustomerUserDetailsService;
+import com.sila.config.exception.BadRequestException;
+import com.sila.config.exception.NotFoundException;
 import com.sila.config.jwt.JwtProvider;
 import com.sila.modules.profile.dto.req.LoginRequest;
 import com.sila.modules.profile.dto.req.SignUpRequest;
 import com.sila.modules.profile.dto.res.LoginResponse;
-import com.sila.config.exception.BadRequestException;
-import com.sila.config.exception.NotFoundException;
 import com.sila.modules.profile.model.User;
 import com.sila.modules.profile.repository.UserRepository;
 import com.sila.modules.resturant.services.RestaurantService;
@@ -59,7 +59,7 @@ public class AuthImp implements AuthService {
 
         userRepository.save(newUser);
 
-        if(request.getRole()==ROLE.OWNER){
+        if (request.getRole() == ROLE.OWNER) {
             restaurantService.autoCreateRestaurantAsDefault(newUser);
         }
 

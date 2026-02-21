@@ -6,22 +6,9 @@ import com.sila.modules.address.model.Address;
 import com.sila.modules.favorite.model.Favorite;
 import com.sila.modules.food.model.Food;
 import com.sila.modules.profile.model.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Restaurant {
+    public double deliveryFee = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,17 +46,12 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ImageRestaurant> images = new ArrayList<>();
-
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Favorite> favorites;
-
-    private int rating=0;
+    private int rating = 0;
+    private double restaurantDiscount = 0;
 
     public void addImage(ImageRestaurant restaurant) {
         this.images.add(restaurant);
     }
-
-    public double deliveryFee = 0;
-
-    private double restaurantDiscount = 0;
 }

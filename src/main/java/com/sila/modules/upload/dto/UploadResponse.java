@@ -12,7 +12,8 @@ public class UploadResponse {
     private String secureUrl;
 
     // Constructors
-    public UploadResponse() {}
+    public UploadResponse() {
+    }
 
     public UploadResponse(String publicId, String secureUrl) {
         this.publicId = publicId;

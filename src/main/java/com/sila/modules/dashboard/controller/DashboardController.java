@@ -1,17 +1,11 @@
 package com.sila.modules.dashboard.controller;
 
-import com.sila.config.context.UserContext;
-import com.sila.modules.category.repository.CategoryRepository;
 import com.sila.modules.dashboard.dto.res.DashboardResponse;
 import com.sila.modules.dashboard.services.DashboardService;
-import com.sila.modules.food.services.FoodService;
-import com.sila.modules.resturant.services.RestaurantService;
-import com.sila.modules.profile.services.UserService;
 import com.sila.share.annotation.PreAuthorization;
 import com.sila.share.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +22,7 @@ import java.util.Map;
 public class DashboardController {
     final DashboardService dashboardService;
 
-    @PreAuthorization({ROLE.OWNER,ROLE.ADMIN})
+    @PreAuthorization({ROLE.OWNER, ROLE.ADMIN})
     @GetMapping
     public ResponseEntity<DashboardResponse> getAdminDashboard() {
         return new ResponseEntity<>(dashboardService.overviews(), HttpStatus.OK);

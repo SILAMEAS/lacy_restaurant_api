@@ -70,6 +70,7 @@ public class ExceptionGlobal {
     public ResponseEntity<MessageResponse> handleMaxSizeException(MaxUploadSizeExceededException ex) {
         return new ResponseEntity<>(MessageResponse.builder().message(ex.getMessage()).status(HttpStatus.PAYLOAD_TOO_LARGE.value()).build(), HttpStatus.PAYLOAD_TOO_LARGE);
     }
+
     /**
      * Handle MethodArgumentTypeMismatchException
      */

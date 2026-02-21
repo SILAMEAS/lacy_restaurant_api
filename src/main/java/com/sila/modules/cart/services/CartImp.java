@@ -1,28 +1,24 @@
 package com.sila.modules.cart.services;
 
 import com.sila.config.context.UserContext;
-import com.sila.modules.cart.dto.CartResponse;
 import com.sila.config.exception.BadRequestException;
 import com.sila.config.exception.NotFoundException;
+import com.sila.modules.cart.dto.CartResponse;
 import com.sila.modules.cart.model.Cart;
 import com.sila.modules.cart.model.CartItem;
-import com.sila.modules.food.model.Food;
-import com.sila.modules.profile.model.User;
 import com.sila.modules.cart.repository.CartItemRepository;
 import com.sila.modules.cart.repository.CartRepository;
-import com.sila.modules.profile.repository.UserRepository;
+import com.sila.modules.food.model.Food;
 import com.sila.modules.food.services.FoodService;
+import com.sila.modules.profile.model.User;
+import com.sila.modules.profile.repository.UserRepository;
 import com.sila.modules.profile.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +32,7 @@ public class CartImp implements CartService {
     @Override
     public List<CartResponse> getAll() {
         var categories = cartRepository.findAllByUser(UserContext.getUser());
-        if(CollectionUtils.isEmpty(categories)){
+        if (CollectionUtils.isEmpty(categories)) {
             return new ArrayList<>();
         }
         return categories.stream().map(CartResponse::toResponse).toList();
@@ -50,11 +46,11 @@ public class CartImp implements CartService {
 
         var carts = cartRepository.findAllByUserId(UserContext.getUser().getId());
 
-        for(var cart:carts){
-            for(var f:cart.getItems()){
+        for (var cart : carts) {
+            for (var f : cart.getItems()) {
                 var restaruantId = f.getFood().getRestaurant().getId();
-                if(Objects.equals(foodRestaurant.getId(), restaruantId)){
-                    cartRepository.save(addItemToCartItemExit(cart,food,quantity));
+                if (Objects.equals(foodRestaurant.getId(), restaruantId)) {
+                    cartRepository.save(addItemToCartItemExit(cart, food, quantity));
                     return;
                 }
             }
@@ -64,24 +60,22 @@ public class CartImp implements CartService {
         User user = UserContext.getUser();
         Cart newCart = new Cart();
         newCart.setUser(user);
-        cartRepository.save(addItemToCartItemExit(newCart,food,quantity));
+        cartRepository.save(addItemToCartItemExit(newCart, food, quantity));
         user.getCarts().add(newCart);
         userRepository.save(user);
 
     }
 
 
-
-
     @Override
-    public void removeItemFromCart(Long cartId,Long cartItemId) {
+    public void removeItemFromCart(Long cartId, Long cartItemId) {
         Cart cart = findCartById(cartId);
         var itemsInCart = cart.getItems();
         var exited = cartItemRepository.findById(cartItemId).isPresent();
-        if(!exited){
+        if (!exited) {
             throw new BadRequestException("Not found item cart with this id");
         }
-        if(itemsInCart.size()==1){
+        if (itemsInCart.size() == 1) {
             cartItemRepository.deleteAllByIdInBatch(List.of(cartItemId));
             cartRepository.deleteAllByIdInBatch(List.of(cartId));
         } else {
@@ -91,8 +85,8 @@ public class CartImp implements CartService {
     }
 
     @Override
-    public void updateItemFromCart(Long cartId,Long cartItemId, int quantity) throws Exception {
-        Cart cart =findCartById(cartId); // Get cart of currently authenticated user
+    public void updateItemFromCart(Long cartId, Long cartItemId, int quantity) throws Exception {
+        Cart cart = findCartById(cartId); // Get cart of currently authenticated user
         CartItem cartItem = cartItemRepository.findByIdAndCart(cartItemId, cart)
                 .orElseThrow(() -> new BadRequestException("Cart item not found in your cart"));
 
@@ -109,11 +103,13 @@ public class CartImp implements CartService {
         cartRepository.deleteAllByIdInBatch(Collections.singletonList(cartId));
     }
 
-/** ==================================== Extra Method ==================================== **/
+    /**
+     * ==================================== Extra Method ====================================
+     **/
 
     private Cart findCartByUser() throws Exception {
         var user = userService.getById(userService.getProfile().getId());
-        return cartRepository.findByUser(user).orElseGet(()->{
+        return cartRepository.findByUser(user).orElseGet(() -> {
             Cart newCart = new Cart();
             newCart.setUser(user);
             return cartRepository.save(newCart);
@@ -138,7 +134,8 @@ public class CartImp implements CartService {
 
         return cart;
     }
-    private Cart findCartById(Long cartId){
-        return cartRepository.findById(cartId).orElseThrow(()-> new NotFoundException("Not found cart with this id"+cartId));
+
+    private Cart findCartById(Long cartId) {
+        return cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Not found cart with this id" + cartId));
     }
 }

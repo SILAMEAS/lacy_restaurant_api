@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.Set;
 
-public interface ChatRoomRepository extends JpaRepository<ChatRoom,Long> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByRoomId(String roomId);
 
     Optional<ChatRoom> findById(Long id);

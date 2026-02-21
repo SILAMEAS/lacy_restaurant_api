@@ -1,9 +1,9 @@
 package com.sila.modules.payment.controller;
 
+import com.sila.modules.payment.PAYMENT_METHOD;
 import com.sila.modules.payment.dto.PaymentResponse;
 import com.sila.modules.payment.services.PaymentService;
 import com.sila.share.annotation.PreAuthorization;
-import com.sila.modules.payment.PAYMENT_METHOD;
 import com.sila.share.enums.ROLE;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class PaymentController {
     final PaymentService paymentService;
+
     @PreAuthorization({ROLE.USER})
     @PostMapping()
     public ResponseEntity<PaymentResponse> pay(@RequestParam Long orderId, @RequestParam PAYMENT_METHOD method) {

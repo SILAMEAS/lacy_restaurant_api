@@ -30,7 +30,6 @@ public final class FoodSpecification {
     }
 
 
-
     public static Specification<Food> filterByRestaurantId(Long resId) {
         if (resId == null) {
             return null;
@@ -38,6 +37,7 @@ public final class FoodSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Food_.RESTAURANT).get(Restaurant_.ID), resId);
 
     }
+
     /**
      * ==============================  Specification  ========================================================
      **/
@@ -50,10 +50,11 @@ public final class FoodSpecification {
 
     public static Specification<Food> filterFoodByRestaurantId(Long restaurantId, String filterBy) {
         Specification<Food> spec = Specification.where(null);
-        spec= addFilterSpecification(spec,filterBy);
-        spec = addRestaurantIdSpecification(spec,restaurantId);
+        spec = addFilterSpecification(spec, filterBy);
+        spec = addRestaurantIdSpecification(spec, restaurantId);
         return spec;
     }
+
     /**
      * ==============================  Re-usable method  ========================================================
      **/
@@ -63,6 +64,7 @@ public final class FoodSpecification {
         }
         return spec;
     }
+
     public static Specification<Food> addSearchSpecification(Specification<Food> spec, String search) {
         if (Objects.nonNull(search)) {
             return spec.and(FoodSpecification.search(search));

@@ -3,12 +3,7 @@ package com.sila.modules.favorite.model;
 
 import com.sila.modules.profile.model.User;
 import com.sila.modules.resturant.model.Restaurant;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,5 +33,4 @@ public class Favorite {
     private Restaurant restaurant;
 
 
-    
 }

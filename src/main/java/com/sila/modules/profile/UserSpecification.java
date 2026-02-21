@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.JoinType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserSpecification {
     public static Specification<User> search(String search) {
@@ -22,6 +23,7 @@ public class UserSpecification {
         );
 
     }
+
     public static Specification<User> hasOrderedFromRestaurant(Long restaurantId) {
         return (root, query, cb) -> {
             query.distinct(true); // prevent duplicate users
@@ -30,7 +32,6 @@ public class UserSpecification {
             return cb.equal(orders.get("restaurant").get("id"), restaurantId);
         };
     }
-
 
 
 }

@@ -1,16 +1,16 @@
 package com.sila.modules.category.controller;
 
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.share.method.OnCreate;
-import com.sila.share.method.OnUpdate;
 import com.sila.modules.category.dto.CategoryRequest;
-import com.sila.share.dto.req.PaginationRequest;
 import com.sila.modules.category.dto.CategoryResponse;
-import com.sila.modules.chat.dto.MessageResponse;
 import com.sila.modules.category.model.Category;
 import com.sila.modules.category.services.CategoryService;
+import com.sila.modules.chat.dto.MessageResponse;
 import com.sila.share.annotation.PreAuthorization;
+import com.sila.share.dto.req.PaginationRequest;
 import com.sila.share.enums.ROLE;
+import com.sila.share.method.OnCreate;
+import com.sila.share.method.OnUpdate;
+import com.sila.share.pagination.EntityResponseHandler;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,20 +38,22 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
-    public ResponseEntity<Category> createCategory(@Validated(OnCreate.class) @ModelAttribute  CategoryRequest request) {
+    public ResponseEntity<Category> createCategory(@Validated(OnCreate.class) @ModelAttribute CategoryRequest request) {
         return new ResponseEntity<>(categoryService.create(request), HttpStatus.CREATED);
     }
 
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<CategoryResponse>> getRestaurantCategory(@PathVariable Long restaurantId) {
-        List<CategoryResponse> categoriesInRestaurant = categoryService.getsByResId(restaurantId).stream().map(f->modelMapper.map(f, CategoryResponse.class)).toList();
+        List<CategoryResponse> categoriesInRestaurant = categoryService.getsByResId(restaurantId).stream().map(f -> modelMapper.map(f, CategoryResponse.class)).toList();
         return new ResponseEntity<>(categoriesInRestaurant, HttpStatus.OK);
     }
+
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
     @PutMapping("{categoryId}")
-    public ResponseEntity<Category> editCategory(@Validated(OnUpdate.class) @ModelAttribute  CategoryRequest request, @PathVariable Long categoryId) {
+    public ResponseEntity<Category> editCategory(@Validated(OnUpdate.class) @ModelAttribute CategoryRequest request, @PathVariable Long categoryId) {
         return new ResponseEntity<>(categoryService.update(request, categoryId), HttpStatus.CREATED);
     }
+
     @PreAuthorization({ROLE.ADMIN, ROLE.OWNER})
     @DeleteMapping("{categoryId}")
     public ResponseEntity<MessageResponse> deleteCategory(@PathVariable Long categoryId) {

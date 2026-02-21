@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     List<ChatMessage> findByRoom_RoomIdOrderByTimestampAsc(String roomId);
+
     Page<ChatMessage> findAllByRoom(Pageable pageable, ChatRoom room);
 
     void deleteByRoom(ChatRoom room);

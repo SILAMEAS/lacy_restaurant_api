@@ -48,13 +48,12 @@ public class RoleProtectionAspect {
         }
 
 
-
         boolean hasRole = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(allowed::contains);
 
         if (!hasRole) {
-            throw new AccessDeniedException("Access denied: This action requires "+Arrays.toString(allowedRoles)+" privileges. The current role "+auth.getAuthorities()+" is not authorized to perform this operation.");
+            throw new AccessDeniedException("Access denied: This action requires " + Arrays.toString(allowedRoles) + " privileges. The current role " + auth.getAuthorities() + " is not authorized to perform this operation.");
         }
     }
 }

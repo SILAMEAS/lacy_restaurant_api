@@ -1,25 +1,25 @@
 package com.sila.modules.order.services;
 
 import com.sila.config.context.UserContext;
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.share.dto.req.PaginationRequest;
-import com.sila.modules.order.dto.OrderItemResponse;
-import com.sila.modules.order.dto.OrderResponse;
-import com.sila.modules.profile.dto.res.UserResponse;
 import com.sila.config.exception.BadRequestException;
 import com.sila.modules.cart.model.CartItem;
-import com.sila.modules.order.model.Order;
-import com.sila.modules.order.model.OrderItem;
-import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.cart.repository.CartItemRepository;
 import com.sila.modules.cart.repository.CartRepository;
+import com.sila.modules.order.dto.OrderItemResponse;
+import com.sila.modules.order.dto.OrderResponse;
+import com.sila.modules.order.model.Order;
+import com.sila.modules.order.model.OrderItem;
 import com.sila.modules.order.repository.OrderItemRepository;
 import com.sila.modules.order.repository.OrderRepository;
+import com.sila.modules.payment.PAYMENT_STATUS;
+import com.sila.modules.profile.dto.res.UserResponse;
+import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.resturant.services.RestaurantImp;
 import com.sila.modules.resturant.services.RestaurantService;
-import com.sila.share.pagination.PageableUtil;
-import com.sila.modules.payment.PAYMENT_STATUS;
+import com.sila.share.dto.req.PaginationRequest;
 import com.sila.share.enums.ROLE;
+import com.sila.share.pagination.EntityResponseHandler;
+import com.sila.share.pagination.PageableUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -48,16 +48,16 @@ public class OrderImp implements OrderService {
 
         Pageable pageable = PageableUtil.fromRequest(request);
 
-        Page<Order> orders ;
-        if(user.getRole()== ROLE.USER){
-            orders = orderRepository.findAllByUser(user,pageable);
-        }else if(user.getRole()== ROLE.OWNER){
+        Page<Order> orders;
+        if (user.getRole() == ROLE.USER) {
+            orders = orderRepository.findAllByUser(user, pageable);
+        } else if (user.getRole() == ROLE.OWNER) {
             var restaurant = restaurantService.findRestaurantByOwner(user);
-            orders= orderRepository.findAllByRestaurant(restaurant,pageable);
-        }else {
-            orders= orderRepository.findAll(pageable);
+            orders = orderRepository.findAllByRestaurant(restaurant, pageable);
+        } else {
+            orders = orderRepository.findAll(pageable);
         }
-        return  new EntityResponseHandler<>(orders
+        return new EntityResponseHandler<>(orders
                 .map(this::convertToOrderResponse));
     }
 
@@ -66,9 +66,9 @@ public class OrderImp implements OrderService {
     public OrderResponse placeOrder(Long cartId) {
         // Get the authenticated user
         final var user = UserContext.getUser();
-        var cart = cartRepository.findByIdAndUserAndItemsNotEmpty(cartId,user).orElseThrow(()->
-                        new BadRequestException("cart is not belong to user or cart not found")
-                );
+        var cart = cartRepository.findByIdAndUserAndItemsNotEmpty(cartId, user).orElseThrow(() ->
+                new BadRequestException("cart is not belong to user or cart not found")
+        );
 
         // Create a new order
         Order order = new Order();
@@ -118,7 +118,7 @@ public class OrderImp implements OrderService {
     @Override
     public String deletePlaceOrder(Long orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(
-                ()-> new BadRequestException("Order not found")
+                () -> new BadRequestException("Order not found")
         );
         orderRepository.deleteById(order.getId());
         return "Order has been delete";

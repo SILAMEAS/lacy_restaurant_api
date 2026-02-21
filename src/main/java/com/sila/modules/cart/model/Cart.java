@@ -2,14 +2,7 @@ package com.sila.modules.cart.model;
 
 
 import com.sila.modules.profile.model.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +29,7 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
+    private boolean active = true;
 
     public void addItem(CartItem item) {
         item.setCart(this);
@@ -45,5 +39,4 @@ public class Cart {
     public void removeItemById(Long cartItemId) {
         items.removeIf(item -> item.getId().equals(cartItemId));
     }
-    private boolean active = true;
 }

@@ -21,6 +21,7 @@ public interface CloudinaryService {
     Map<String, String> uploadFileRemoveBG(MultipartFile file);
 
     String deleteImage(String publicId) throws IOException;
+
     String getBackgroundRemovedImage(String publicId);
 
     <T, I> List<I> uploadImagesToCloudinary(

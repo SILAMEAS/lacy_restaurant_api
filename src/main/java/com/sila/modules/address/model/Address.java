@@ -1,20 +1,9 @@
 package com.sila.modules.address.model;
 
 import com.sila.modules.profile.model.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
@@ -40,7 +29,7 @@ public class Address {
     @NotEmpty(message = "country can't empty")
     private String country;
     private Boolean currentUsage = false;
-    @JoinColumn(name ="user_id",referencedColumnName = "id",foreignKey = @ForeignKey(name = "fk_user_address"))
+    @JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_user_address"))
     @ManyToOne
     private User user;
 }

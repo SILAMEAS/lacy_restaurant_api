@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class FavoriteImp implements FavoriteService {
 
     @Override
     public List<FavoriteResponse> getMyFav() {
-        List<Favorite> favorite =favoriteRepository.findAllByOwner(UserContext.getUser()).stream().toList();
+        List<Favorite> favorite = favoriteRepository.findAllByOwner(UserContext.getUser()).stream().toList();
         return favorite.stream().map(FavoriteResponse::toResponse).toList();
     }
 }

@@ -20,6 +20,10 @@ public class UserMigrateStartup implements ApplicationListener<ApplicationReadyE
         this.userRepository = userRepository;
     }
 
+    private static LocalDateTime getCurrentDateTime() {
+        return LocalDateTime.now();
+    }
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         List<User> users = userRepository.findAllByCreatedAtIsNullOrUpdatedAtIsNull();
@@ -44,9 +48,5 @@ public class UserMigrateStartup implements ApplicationListener<ApplicationReadyE
         if (!CollectionUtils.isEmpty(toUpdateUsers)) {
             userRepository.saveAll(toUpdateUsers);
         }
-    }
-
-    private static LocalDateTime getCurrentDateTime() {
-        return LocalDateTime.now();
     }
 }

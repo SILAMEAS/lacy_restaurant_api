@@ -1,15 +1,15 @@
 package com.sila.modules.chat.services;
 
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.share.dto.req.PaginationRequest;
-import com.sila.modules.chat.dto.ChatMessageDTO;
 import com.sila.config.exception.NotFoundException;
+import com.sila.modules.chat.dto.ChatMessageDTO;
 import com.sila.modules.chat.model.ChatMessage;
 import com.sila.modules.chat.model.ChatRoom;
-import com.sila.modules.profile.model.User;
 import com.sila.modules.chat.repository.ChatMessageRepository;
 import com.sila.modules.chat.repository.ChatRoomRepository;
+import com.sila.modules.profile.model.User;
 import com.sila.modules.profile.services.UserService;
+import com.sila.share.dto.req.PaginationRequest;
+import com.sila.share.pagination.EntityResponseHandler;
 import com.sila.share.pagination.PageableUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -39,15 +39,15 @@ public class ChatMessageImp implements ChatMessageService {
                 .build();
         chatMessageRepository.save(cartMessage);
 
-        return this.modelMapper.map(cartMessage,ChatMessageDTO.class);
+        return this.modelMapper.map(cartMessage, ChatMessageDTO.class);
 
     }
 
     @Override
-    public EntityResponseHandler<ChatMessageDTO> findAll(String roomId,PaginationRequest request){
-        var room = chatRoomRepository.findByRoomId(ChatRoomService.generateRoom(roomId)).orElseThrow(()->new NotFoundException("Chat Room not found"));
+    public EntityResponseHandler<ChatMessageDTO> findAll(String roomId, PaginationRequest request) {
+        var room = chatRoomRepository.findByRoomId(ChatRoomService.generateRoom(roomId)).orElseThrow(() -> new NotFoundException("Chat Room not found"));
         Pageable pageable = PageableUtil.fromRequest(request);
-        return new EntityResponseHandler<>(chatMessageRepository.findAllByRoom(pageable,room).map(re -> this.modelMapper.map(re, ChatMessageDTO.class)));
+        return new EntityResponseHandler<>(chatMessageRepository.findAllByRoom(pageable, room).map(re -> this.modelMapper.map(re, ChatMessageDTO.class)));
     }
 
 

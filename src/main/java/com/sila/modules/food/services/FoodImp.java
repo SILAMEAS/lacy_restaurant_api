@@ -1,26 +1,26 @@
 package com.sila.modules.food.services;
 
 import com.sila.config.context.UserContext;
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.modules.food.dto.FoodRequest;
-import com.sila.share.dto.req.PaginationRequest;
-import com.sila.modules.food.dto.FoodResponse;
 import com.sila.config.exception.BadRequestException;
 import com.sila.modules.category.model.Category;
-import com.sila.modules.food.model.Food;
-import com.sila.modules.resturant.model.Restaurant;
-import com.sila.modules.food.model.ImageFood;
 import com.sila.modules.category.repository.CategoryRepository;
+import com.sila.modules.food.FoodSpecification;
+import com.sila.modules.food.FoodType;
+import com.sila.modules.food.dto.FoodRequest;
+import com.sila.modules.food.dto.FoodResponse;
+import com.sila.modules.food.model.Food;
+import com.sila.modules.food.model.ImageFood;
 import com.sila.modules.food.repository.FoodRepository;
 import com.sila.modules.order.repository.OrderItemRepository;
+import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.resturant.repository.RestaurantRepository;
-import com.sila.modules.upload.services.CloudinaryService;
 import com.sila.modules.resturant.services.RestaurantService;
-import com.sila.modules.food.FoodSpecification;
-import com.sila.share.pagination.PageableUtil;
+import com.sila.modules.upload.services.CloudinaryService;
 import com.sila.share.Utils;
-import com.sila.modules.food.FoodType;
+import com.sila.share.dto.req.PaginationRequest;
 import com.sila.share.enums.ROLE;
+import com.sila.share.pagination.EntityResponseHandler;
+import com.sila.share.pagination.PageableUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -115,9 +115,6 @@ public class FoodImp implements FoodService {
         food.setPriceWithDiscount(food.getPriceWithDiscountCalculated());
 
 
-
-
-
         cloudinaryService.updateEntityImages(
                 food,
                 foodReq.getImages(),
@@ -137,12 +134,11 @@ public class FoodImp implements FoodService {
     }
 
 
-
     @Override
     public void delete(Long id) {
         Food food = getById(id);
         var orderItems = orderItemRepository.findAllByFood(food);
-        if(!orderItems.isEmpty()){
+        if (!orderItems.isEmpty()) {
             throw new BadRequestException("Food has been order! finished order before delete");
         }
         food.setRestaurant(null);
@@ -153,7 +149,7 @@ public class FoodImp implements FoodService {
     @Transactional
     public String deleteByCategoryId(Long categoryId) {
         var foods = foodRepository.findAllByCategoryId(categoryId);
-        for(var food : foods){
+        for (var food : foods) {
             orderItemRepository.deleteAllByFood(food);
         }
         foodRepository.deleteAllByCategoryId(categoryId);
@@ -197,8 +193,8 @@ public class FoodImp implements FoodService {
                     cb.equal(root.get("restaurant"), restaurant)
             );
         }
-        if(Objects.nonNull(request.getSearch())){
-            spec = spec.and(addSearchSpecification(spec,request.getSearch()));
+        if (Objects.nonNull(request.getSearch())) {
+            spec = spec.and(addSearchSpecification(spec, request.getSearch()));
 
         }
         Page<FoodResponse> page = foodRepository
@@ -207,6 +203,7 @@ public class FoodImp implements FoodService {
 
         return new EntityResponseHandler<>(page);
     }
+
     @Override
     public Long count() {
         return foodRepository.count();
@@ -219,7 +216,7 @@ public class FoodImp implements FoodService {
     }
 
     @Override
-    public EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId,  PaginationRequest request) {
+    public EntityResponseHandler<FoodResponse> getsByResId(Long restaurantId, PaginationRequest request) {
         Pageable pageable = PageableUtil.fromRequest(request);
         var foodPage = foodRepository.findAll(FoodSpecification.filterFoodByRestaurantId(restaurantId, request.getFilterBy()), pageable);
         return new EntityResponseHandler<>(foodPage.map(FoodResponse::toResponse));

@@ -1,15 +1,10 @@
 package com.sila.modules.food.dto;
 
-import com.sila.modules.resturant.dto.DiscountResponse;
+import com.sila.modules.food.FoodType;
 import com.sila.modules.food.model.Food;
 import com.sila.modules.food.model.ImageFood;
-import com.sila.modules.food.FoodType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.sila.modules.resturant.dto.DiscountResponse;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,15 +35,6 @@ public class FoodResponse implements Serializable {
 
     private double tax;
 
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CategoryDTO {
-        private Long id;
-        private String name;
-    }
-
     public static FoodResponse toResponse(Food food) {
         return FoodResponse.builder()
                 .id(food.getId())
@@ -75,6 +61,14 @@ public class FoodResponse implements Serializable {
                         .total(food.getTotalDiscount())
                         .build())
                 .build();
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CategoryDTO {
+        private Long id;
+        private String name;
     }
 }
 

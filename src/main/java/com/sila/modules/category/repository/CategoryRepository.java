@@ -15,14 +15,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     public List<Category> findByRestaurantId(Long restaurant_id);
 
     boolean existsByNameAndRestaurant(String name, Restaurant restaurant);
+
     void deleteByRestaurantId(Long restaurant_id);
 
     @Query("""
-    SELECT DISTINCT c FROM Category c
-    LEFT JOIN c.foodList f
-    WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
-      AND (:restaurantId IS NULL OR c.restaurant.id = :restaurantId)
-""")
+                SELECT DISTINCT c FROM Category c
+                LEFT JOIN c.foodList f
+                WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
+                  AND (:restaurantId IS NULL OR c.restaurant.id = :restaurantId)
+            """)
     Page<Category> findByFilters(@Param("name") String name,
                                  @Param("restaurantId") Long restaurantId,
                                  Pageable pageable);

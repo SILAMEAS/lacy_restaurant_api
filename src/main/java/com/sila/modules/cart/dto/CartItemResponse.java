@@ -1,7 +1,7 @@
 package com.sila.modules.cart.dto;
 
-import com.sila.modules.food.dto.FoodResponse;
 import com.sila.modules.cart.model.CartItem;
+import com.sila.modules.food.dto.FoodResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

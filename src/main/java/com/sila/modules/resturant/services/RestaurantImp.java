@@ -1,34 +1,34 @@
 package com.sila.modules.resturant.services;
 
-import com.sila.modules.address.model.Address;
 import com.sila.config.context.UserContext;
-import com.sila.share.pagination.EntityResponseHandler;
-import com.sila.modules.favorite.model.Favorite;
-import com.sila.modules.resturant.dto.RestaurantRequest;
-import com.sila.share.dto.req.SearchRequest;
-import com.sila.modules.address.dto.AddressResponse;
-import com.sila.modules.resturant.dto.ContactInformationResponse;
-import com.sila.modules.favorite.dto.FavoriteResponse;
-import com.sila.share.dto.res.ImageDetailsResponse;
-import com.sila.modules.chat.dto.MessageResponse;
-import com.sila.modules.resturant.dto.RestaurantResponse;
-import com.sila.modules.profile.dto.res.UserResponse;
 import com.sila.config.exception.AccessDeniedException;
 import com.sila.config.exception.BadRequestException;
 import com.sila.config.exception.NotFoundException;
-import com.sila.modules.resturant.model.ContactInformation;
-import com.sila.modules.resturant.model.ImageRestaurant;
-import com.sila.modules.profile.model.User;
+import com.sila.modules.address.dto.AddressResponse;
+import com.sila.modules.address.model.Address;
 import com.sila.modules.address.repository.AddressRepository;
 import com.sila.modules.category.repository.CategoryRepository;
+import com.sila.modules.chat.dto.MessageResponse;
+import com.sila.modules.favorite.dto.FavoriteResponse;
+import com.sila.modules.favorite.model.Favorite;
 import com.sila.modules.favorite.repository.FavoriteRepository;
 import com.sila.modules.order.repository.OrderRepository;
-import com.sila.modules.resturant.repository.RestaurantRepository;
-import com.sila.modules.resturant.model.Restaurant;
-import com.sila.modules.upload.services.CloudinaryService;
+import com.sila.modules.profile.dto.res.UserResponse;
+import com.sila.modules.profile.model.User;
 import com.sila.modules.resturant.RestaurantSpecification;
+import com.sila.modules.resturant.dto.ContactInformationResponse;
+import com.sila.modules.resturant.dto.RestaurantRequest;
+import com.sila.modules.resturant.dto.RestaurantResponse;
+import com.sila.modules.resturant.model.ContactInformation;
+import com.sila.modules.resturant.model.ImageRestaurant;
+import com.sila.modules.resturant.model.Restaurant;
+import com.sila.modules.resturant.repository.RestaurantRepository;
+import com.sila.modules.upload.services.CloudinaryService;
 import com.sila.share.Utils;
+import com.sila.share.dto.req.SearchRequest;
+import com.sila.share.dto.res.ImageDetailsResponse;
 import com.sila.share.enums.ROLE;
+import com.sila.share.pagination.EntityResponseHandler;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +58,45 @@ public class RestaurantImp implements RestaurantService {
     private final CategoryRepository categoryRepository;
     private final EntityManager entityManager; // Add EntityManager
 
+    public static RestaurantResponse mapToRestaurantResponse(Restaurant restaurant) {
+        List<ImageDetailsResponse> imageDetails = restaurant.getImages().stream()
+                .map(image -> new ImageDetailsResponse(image.getUrl(), image.getPublicId()))
+                .toList();
+
+        AddressResponse response = null;
+        if (restaurant.getAddress() != null) {
+            response = AddressResponse.builder()
+                    .name(restaurant.getAddress().getName())
+                    .id(restaurant.getAddress().getId())
+                    .street(restaurant.getAddress().getStreet())
+                    .city(restaurant.getAddress().getCity())
+                    .country(restaurant.getAddress().getCountry())
+                    .zip(restaurant.getAddress().getZip())
+                    .state(restaurant.getAddress().getState())
+                    .currentUsage(restaurant.getAddress().getCurrentUsage())
+                    .build();
+        }
+
+        return RestaurantResponse.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .description(restaurant.getDescription())
+                .cuisineType(restaurant.getCuisineType())
+                .open(restaurant.isOpen())
+                .openingHours(restaurant.getOpeningHours())
+                .registrationDate(restaurant.getRegistrationDate())
+                .address(response)
+                .contactInformation(ContactInformationResponse.builder()
+                        .email(restaurant.getContactInformation().getEmail())
+                        .phone(restaurant.getContactInformation().getPhone())
+                        .build())
+                .imageUrls(imageDetails)
+                .ownerName(restaurant.getOwner().getFullName())
+                .ownerId(restaurant.getOwner().getId())
+                .deliveryFee(restaurant.getDeliveryFee())
+                .discount(restaurant.getRestaurantDiscount())
+                .build();
+    }
 
     @Override
     @Transactional
@@ -89,7 +128,7 @@ public class RestaurantImp implements RestaurantService {
                 .open(restaurantReq.getOpen()) // don't forget this!
                 .build();
 
-        var imageEntities =cloudinaryService.uploadImagesToCloudinary(
+        var imageEntities = cloudinaryService.uploadImagesToCloudinary(
                 restaurantReq.getImages(),
                 restaurant,
                 (url, publicId) -> {
@@ -105,7 +144,6 @@ public class RestaurantImp implements RestaurantService {
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return mapToRestaurantResponse(savedRestaurant);
     }
-
 
     @Override
     @Transactional
@@ -151,13 +189,13 @@ public class RestaurantImp implements RestaurantService {
             restaurant.setAddress(managedAddress);
         }
 
-            Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return mapToRestaurantResponse(savedRestaurant);
     }
 
     @Override
     @Transactional
-    public MessageResponse delete(Long id){
+    public MessageResponse delete(Long id) {
         var restaurant = getById(id);
         var images = restaurant.getImages().stream().map(ImageRestaurant::getPublicId).collect(Collectors.toList());
         // First delete categories related to the restaurant
@@ -172,7 +210,6 @@ public class RestaurantImp implements RestaurantService {
         return MessageResponse.builder().message("Deleted restaurant id: " + id + " successfully!").status(HttpStatus.OK.value()).build();
     }
 
-
     @Override
     public Restaurant getById(Long id) {
         return restaurantRepository.findById(id).orElseThrow(() -> new BadRequestException("Restaurant not found with id " + id));
@@ -183,9 +220,9 @@ public class RestaurantImp implements RestaurantService {
         var user = UserContext.getUser();
         Restaurant restaurant = findRestaurantByOwner(user);
         if (Objects.isNull(restaurant)) {
-            if(user.getRole() == ROLE.OWNER){
+            if (user.getRole() == ROLE.OWNER) {
                 throw new BadRequestException("user don't have restaurant");
-            }else
+            } else
                 throw new BadRequestException("this role can't have restaurant");
         }
         return mapToRestaurantResponse(restaurant);
@@ -200,7 +237,7 @@ public class RestaurantImp implements RestaurantService {
     @Override
     public List<UserResponse> getUsersWhoOrderedFromRestaurant(Long restaurantId) {
         var users = orderRepository.findUsersByRestaurantId(restaurantId);
-        return users.stream().map(u->this.modelMapper.map(u,UserResponse.class)).toList();
+        return users.stream().map(u -> this.modelMapper.map(u, UserResponse.class)).toList();
     }
 
     @Override
@@ -210,14 +247,14 @@ public class RestaurantImp implements RestaurantService {
 
     @Override
     public Restaurant findRestaurantByOwner(User user) {
-        return restaurantRepository.findByOwnerId(user.getId()).orElseThrow(()->
+        return restaurantRepository.findByOwnerId(user.getId()).orElseThrow(() ->
                 new NotFoundException("Restaurant not found with this owner"));
     }
 
     @Override
     public void autoCreateRestaurantAsDefault(User user) {
         var IsCreatedRestaurant = restaurantRepository.existsByOwnerId(user.getId());
-        if(!IsCreatedRestaurant) {
+        if (!IsCreatedRestaurant) {
             Address address = addressRepository.save(Address.builder()
                     .name("WORK") // ✅ Add this line
                     .street("STREET")
@@ -229,7 +266,7 @@ public class RestaurantImp implements RestaurantService {
                     .currentUsage(Boolean.TRUE)
                     .build());
 
-            ContactInformation contactInformation= ContactInformation.builder()
+            ContactInformation contactInformation = ContactInformation.builder()
                     .email(user.getEmail())
                     .phone("0123456789")
                     .build();
@@ -265,7 +302,6 @@ public class RestaurantImp implements RestaurantService {
         return restaurant.getFavorites().stream().map(favorite -> modelMapper.map(favorite, FavoriteResponse.class)).toList();
     }
 
-
     public boolean isUserOwnerOfRestaurant(Long userId, Long restaurantId) throws Exception {
         Restaurant restaurant = getById(restaurantId);
         if (!restaurant.getOwner().getId().equals(userId)) {
@@ -280,44 +316,5 @@ public class RestaurantImp implements RestaurantService {
             throw new NotFoundException("Not Found Restaurant with id : " + restaurantId);
         }
         return restaurantExit.get();
-    }
-    public static RestaurantResponse mapToRestaurantResponse(Restaurant restaurant) {
-        List<ImageDetailsResponse> imageDetails = restaurant.getImages().stream()
-                .map(image -> new ImageDetailsResponse(image.getUrl(), image.getPublicId()))
-                .toList();
-
-        AddressResponse response = null;
-        if (restaurant.getAddress() != null) {
-            response = AddressResponse.builder()
-                    .name(restaurant.getAddress().getName())
-                    .id(restaurant.getAddress().getId())
-                    .street(restaurant.getAddress().getStreet())
-                    .city(restaurant.getAddress().getCity())
-                    .country(restaurant.getAddress().getCountry())
-                    .zip(restaurant.getAddress().getZip())
-                    .state(restaurant.getAddress().getState())
-                    .currentUsage(restaurant.getAddress().getCurrentUsage())
-                    .build();
-        }
-
-        return RestaurantResponse.builder()
-                .id(restaurant.getId())
-                .name(restaurant.getName())
-                .description(restaurant.getDescription())
-                .cuisineType(restaurant.getCuisineType())
-                .open(restaurant.isOpen())
-                .openingHours(restaurant.getOpeningHours())
-                .registrationDate(restaurant.getRegistrationDate())
-                .address(response)
-                .contactInformation(ContactInformationResponse.builder()
-                        .email(restaurant.getContactInformation().getEmail())
-                        .phone(restaurant.getContactInformation().getPhone())
-                        .build())
-                .imageUrls(imageDetails)
-                .ownerName(restaurant.getOwner().getFullName())
-                .ownerId(restaurant.getOwner().getId())
-                .deliveryFee(restaurant.getDeliveryFee())
-                .discount(restaurant.getRestaurantDiscount())
-                .build();
     }
 }

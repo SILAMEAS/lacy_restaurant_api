@@ -1,9 +1,9 @@
 package com.sila.modules.profile.controller;
 
+import com.sila.config.exception.AccessDeniedException;
 import com.sila.modules.profile.dto.req.LoginRequest;
 import com.sila.modules.profile.dto.req.SignUpRequest;
 import com.sila.modules.profile.dto.res.LoginResponse;
-import com.sila.config.exception.AccessDeniedException;
 import com.sila.modules.profile.services.AuthService;
 import com.sila.share.enums.ROLE;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -28,9 +28,9 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody @Valid SignUpRequest request) {
-        if(request.getRole().equals(ROLE.USER)) {
+        if (request.getRole().equals(ROLE.USER)) {
             return authService.signUp(request);
-        }else {
+        } else {
             throw new AccessDeniedException("Only users can sign up");
         }
     }

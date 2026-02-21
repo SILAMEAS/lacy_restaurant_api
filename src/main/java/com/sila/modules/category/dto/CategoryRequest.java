@@ -19,6 +19,6 @@ public class CategoryRequest {
     @NotNull(groups = OnCreate.class, message = "images is required")
     private MultipartFile image;
 
-    private Boolean removeBg=false;
+    private Boolean removeBg = false;
 
 }

@@ -1,9 +1,9 @@
 package com.sila.modules.resturant;
 
 import com.sila.modules.address.model.Address_;
+import com.sila.modules.resturant.model.Restaurant;
 import com.sila.modules.resturant.model.Restaurant_;
 import com.sila.share.dto.req.SearchRequest;
-import com.sila.modules.resturant.model.Restaurant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -43,7 +43,6 @@ public class RestaurantSpecification {
     }
 
 
-
     public static Specification<Restaurant> likeCountry(String country) {
         if (country == null) {
             return null;
@@ -52,6 +51,7 @@ public class RestaurantSpecification {
                 Address_.COUNTRY), "%" + country + "%");
 
     }
+
     public static Specification<Restaurant> filterRestaurant(SearchRequest searchReq) {
         Specification<Restaurant> spec = Specification.where(null);
         if (Objects.nonNull(searchReq.getSearch())) {

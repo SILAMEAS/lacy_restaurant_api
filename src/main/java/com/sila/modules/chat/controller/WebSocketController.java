@@ -2,8 +2,8 @@ package com.sila.modules.chat.controller;
 
 import com.sila.modules.chat.dto.AlertDTO;
 import com.sila.modules.chat.dto.ChatMessageDTO;
-import com.sila.modules.chat.services.ChatMessageService;
 import com.sila.modules.chat.dto.NotificationDTO;
+import com.sila.modules.chat.services.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -24,11 +24,13 @@ public class WebSocketController {
         messagingTemplate.convertAndSend("/topic/messages", chatMessageService.createMessage(dto));
 
     }
+
     // 🔹 Notification Handler
     @MessageMapping("/notification/send")
     public void sendNotification(@Payload NotificationDTO dto) {
-        messagingTemplate.convertAndSend("/topic/notification/" +dto);
+        messagingTemplate.convertAndSend("/topic/notification/" + dto);
     }
+
     // 🔹 Alert Broadcast
     @MessageMapping("/alert/send")
     public void sendAlert(@Payload AlertDTO dto) {

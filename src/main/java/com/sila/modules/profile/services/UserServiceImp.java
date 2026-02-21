@@ -1,17 +1,17 @@
 package com.sila.modules.profile.services;
 
 import com.sila.config.context.UserContext;
+import com.sila.config.exception.BadRequestException;
+import com.sila.config.exception.NotFoundException;
 import com.sila.config.jwt.JwtProvider;
-import com.sila.share.pagination.EntityResponseHandler;
+import com.sila.modules.profile.UserSpecification;
 import com.sila.modules.profile.dto.req.UpdateUserRequest;
 import com.sila.modules.profile.dto.req.UserRequest;
 import com.sila.modules.profile.dto.res.UserResponse;
-import com.sila.config.exception.BadRequestException;
-import com.sila.config.exception.NotFoundException;
 import com.sila.modules.profile.model.User;
 import com.sila.modules.profile.repository.UserRepository;
-import com.sila.modules.profile.UserSpecification;
 import com.sila.share.Utils;
+import com.sila.share.pagination.EntityResponseHandler;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +57,7 @@ public class UserServiceImp implements UserService {
         }
         return new EntityResponseHandler<>(userRepository.findAll(spec, pageable).map(re -> this.modelMapper.map(re, UserResponse.class)));
     }
+
     @Override
     public EntityResponseHandler<UserResponse.UserResponseCustom> getUsersWhoOrderedFromRestaurant(Long restaurantId, Pageable pageable) {
         Specification<User> spec = UserSpecification.hasOrderedFromRestaurant(restaurantId);
@@ -88,7 +89,7 @@ public class UserServiceImp implements UserService {
 
 
     @Override
-    public UserResponse update( UserRequest userReq) {
+    public UserResponse update(UserRequest userReq) {
         var user = UserContext.getUser();
 
         Utils.setValueSafe(userReq.getProfile(), user::setProfile);
@@ -112,8 +113,6 @@ public class UserServiceImp implements UserService {
     public Long count() {
         return userRepository.count();
     }
-
-
 
 
 }

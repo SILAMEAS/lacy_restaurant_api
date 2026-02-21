@@ -1,4 +1,3 @@
-
 package com.sila.modules.upload.services;
 
 import com.cloudinary.Cloudinary;
@@ -29,6 +28,7 @@ public class CloudinaryImp implements CloudinaryService {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudinaryImp.class);
     private final Cloudinary cloudinary;
+
     @Override
     public Map<String, String> uploadFile(MultipartFile file) {
         try {
@@ -51,6 +51,7 @@ public class CloudinaryImp implements CloudinaryService {
             throw new RuntimeException(errorMessage, e);
         }
     }
+
     @Override
     public Map<String, String> uploadFileRemoveBG(MultipartFile file) {
         try {
@@ -81,6 +82,7 @@ public class CloudinaryImp implements CloudinaryService {
             throw new RuntimeException(errorMessage, e);
         }
     }
+
     @Override
     public String deleteImage(String publicId) {
         try {

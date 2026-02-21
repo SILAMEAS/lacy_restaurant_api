@@ -17,7 +17,7 @@ public class CartResponse {
     private Long totalItems;
 
     public static CartResponse toResponse(Cart cart) {
-        var items =cart.getItems().stream().map(CartItemResponse::toResponse).toList();
+        var items = cart.getItems().stream().map(CartItemResponse::toResponse).toList();
         String name = items.stream()
                 .findFirst()
                 .map(item -> item.getFood())

@@ -2,13 +2,7 @@ package com.sila.modules.profile.dto.res;
 
 import com.sila.modules.profile.model.User;
 import com.sila.share.enums.ROLE;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -26,6 +20,18 @@ public class UserResponse implements Serializable {
     private String email;
     private ROLE role;
 
+    public static UserResponseCustom toUserResponseCustom(User user) {
+        return UserResponseCustom.builder()
+                .id(user.getId())
+                .orders(user.getOrders().size())
+                .email(user.getEmail())
+                .profile(user.getProfile())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -38,18 +44,6 @@ public class UserResponse implements Serializable {
         private ROLE role;
         private int orders;
         private LocalDateTime createdAt;
-    }
-
-    public static UserResponseCustom toUserResponseCustom(User user) {
-        return UserResponseCustom.builder()
-                .id(user.getId())
-                .orders(user.getOrders().size())
-                .email(user.getEmail())
-                .profile(user.getProfile())
-                .fullName(user.getFullName())
-                .role(user.getRole())
-                .createdAt(user.getCreatedAt())
-                .build();
     }
 }
 
