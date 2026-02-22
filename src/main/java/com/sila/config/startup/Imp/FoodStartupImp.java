@@ -1,9 +1,7 @@
-package com.sila.config.startup;
+package com.sila.config.startup.Imp;
 
 import com.sila.modules.food.model.Food;
 import com.sila.modules.food.repository.FoodRepository;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -11,16 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FoodMigrateStartup implements ApplicationListener<ApplicationReadyEvent> {
+public class FoodStartupImp {
+    final FoodRepository foodRepository;
 
-    private final FoodRepository foodRepository;
-
-    public FoodMigrateStartup(FoodRepository foodRepository) {
+    public FoodStartupImp(FoodRepository foodRepository) {
         this.foodRepository = foodRepository;
     }
 
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void foodMigrate() {
         List<Food> foods = foodRepository.findAll();
         if (CollectionUtils.isEmpty(foods)) {
             return;

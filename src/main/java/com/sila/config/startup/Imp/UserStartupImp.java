@@ -1,9 +1,8 @@
-package com.sila.config.startup;
+package com.sila.config.startup.Imp;
 
+import com.sila.modules.food.repository.FoodRepository;
 import com.sila.modules.profile.model.User;
 import com.sila.modules.profile.repository.UserRepository;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -12,11 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UserMigrateStartup implements ApplicationListener<ApplicationReadyEvent> {
+public class UserStartupImp {
+    final UserRepository userRepository;
 
-    private final UserRepository userRepository;
-
-    public UserMigrateStartup(UserRepository userRepository) {
+    public UserStartupImp(FoodRepository foodRepository, UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -24,8 +22,7 @@ public class UserMigrateStartup implements ApplicationListener<ApplicationReadyE
         return LocalDateTime.now();
     }
 
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void userMigrate() {
         List<User> users = userRepository.findAllByCreatedAtIsNullOrUpdatedAtIsNull();
         if (CollectionUtils.isEmpty(users)) {
             return;
