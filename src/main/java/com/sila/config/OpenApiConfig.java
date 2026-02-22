@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,4 +33,50 @@ public class OpenApiConfig {
                                 .bearerFormat("JWT")))
                 .addSecurityItem(new SecurityRequirement().addList("bearer-key"));
     }
+
+
+    @Bean
+    public GroupedOpenApi authApi() {
+        return GroupedOpenApi.builder()
+                .group("address")
+                .pathsToMatch("/**/address/**")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi cartApi() {
+        return GroupedOpenApi.builder()
+                .group("card")
+                .pathsToMatch("/**/carts/**")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi categoryApi() {
+        return GroupedOpenApi.builder()
+                .group("categories")
+                .pathsToMatch("/**/categories/**")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi foodApi() {
+        return GroupedOpenApi.builder()
+                .group("foods")
+                .pathsToMatch("/**/foods/**")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi orderApi() {
+        return GroupedOpenApi.builder()
+                .group("orders")
+                .pathsToMatch("/**/orders/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi paymentApi() {
+        return GroupedOpenApi.builder()
+                .group("payments")
+                .pathsToMatch("/**/payments/**")
+                .build();
+    }
+
 }
